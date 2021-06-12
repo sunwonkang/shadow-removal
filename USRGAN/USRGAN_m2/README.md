@@ -10,12 +10,12 @@
 
   
 ## Train
-1. Put train datasets in the directory ```USRGAN\``` and set the path of the dataset in ```train_USRGAN.py```
+1. Put train datasets in the directory ```USRGAN\USRGAN_train\``` and set the path of the dataset in ```train_USRGAN.py```
 2. Run ```train_USRGAN.py```
 
 
 ## Test   
-1. Put test datasets in the directory ```USRGAN\``` and set the path of the dataset in ```test.py```
+1. Put test datasets in the directory ```USRGAN\USRGAN_test\``` and set the path of the dataset in ```test.py```
 2. Run ```test.py```
 
 
