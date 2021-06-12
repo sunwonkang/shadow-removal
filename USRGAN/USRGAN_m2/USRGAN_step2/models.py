@@ -62,7 +62,7 @@ class Generator(nn.Module):
         self.model = nn.Sequential(*model)
 
     def forward(self, x):
-        return (self.model(x) + x[:,:self.output_nc]).tanh() #(min=-1, max=1) #just learn a residual
+        return ((self.model(x) * x[:,:self.output_nc]).tanh() + x[:,:self.output_nc]).tanh() #(min=-1, max=1) #just learn a residual
 
 class Discriminator(nn.Module):
     def __init__(self, input_nc):

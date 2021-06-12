@@ -39,11 +39,11 @@ parser.add_argument('--resume', action='store_true', help='resume')
 opt = parser.parse_args()
 
 #Data configuration
-opt.dataroot = '/root/Shadow_S3'
+opt.dataroot = '/root/USRGAN_train/'
 opt.size = 100
 
 #Learning configuration
-opt.batchSize = 1
+opt.batchSize = 1 
 opt.epoch = 0
 opt.n_epochs = 100
 opt.lr = 0.0002
@@ -117,7 +117,7 @@ if opt.resume:
 Tensor = torch.cuda.FloatTensor if opt.cuda else torch.Tensor
 input_A = Tensor(opt.batchSize, opt.input_nc, opt.size, opt.size)
 input_B = Tensor(opt.batchSize, opt.output_nc, opt.size, opt.size)
-input_M = Tensor(opt.batchSize, opt.mask_nc, opt.size, opt.size))
+input_M = Tensor(opt.batchSize, opt.mask_nc, opt.size, opt.size)
 
 target_real = Variable(Tensor(opt.batchSize).fill_(1.0), requires_grad=False)
 target_fake = Variable(Tensor(opt.batchSize).fill_(0.0), requires_grad=False)
@@ -167,22 +167,22 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
         # Identity loss
         # G_A2B(B) should equal B if real B is fed
-        real_BM = torch.cat([real_B, real_M], dim=1).cuda(opt.gpu_id)
+        real_BM = torch.cat([real_B, real_M], dim=1).cuda()
         same_B = netG_A2B(real_BM)
         loss_identity_B = criterion_identity(same_B, real_B)*5.0  #||Gb(b)-b||1
         # G_B2A(A) should equal A if real A is fed
-        real_AM = torch.cat([real_A, real_M], dim=1).cuda(opt.gpu_id)
+        real_AM = torch.cat([real_A, real_M], dim=1).cuda()
         same_A = netG_B2A(real_AM)
         loss_identity_A = criterion_identity(same_A, real_A)*5.0  #||Ga(a)-a||1
         # GAN loss
 
         fake_B = netG_A2B(real_AM)
-        fake_BM = torch.cat([fake_B, real_M], dim=1).cuda(opt.gpu_id)
+        fake_BM = torch.cat([fake_B, real_M], dim=1).cuda()
         pred_fake = netD_B(fake_B)
         loss_GAN_A2B = criterion_GAN(pred_fake, target_real) #log(Db(Gb(a)))
 
         fake_A = netG_B2A(real_BM)
-        fake_AM = torch.cat([fake_A, real_M], dim=1).cuda(opt.gpu_id)
+        fake_AM = torch.cat([fake_A, real_M], dim=1).cuda()
         pred_fake = netD_A(fake_A)
         loss_GAN_B2A = criterion_GAN(pred_fake, target_real) #log(Da(Ga(b)))
 
@@ -254,11 +254,11 @@ for epoch in range(opt.epoch, opt.n_epochs):
             print(log)
 
             img_fake_A = 0.5 * (fake_A.detach().data + 1.0)
-            img_fake_A = (to_pil(img_fake_A.data.squeeze(0).cpu()))
+            img_fake_A = (to_pil(img_fake_A.data[0].squeeze(0).cpu()))
             img_fake_A.save('output/fake_A.png')
 
             img_fake_B = 0.5 * (fake_B.detach().data + 1.0)
-            img_fake_B = (to_pil(img_fake_B.data.squeeze(0).cpu()))
+            img_fake_B = (to_pil(img_fake_B.data[0].squeeze(0).cpu()))
             img_fake_B.save('output/fake_B.png')
 
         # Progress report (http://137.189.90.150:8097)

@@ -12,6 +12,9 @@ parser.add_argument('--img_format', type=str, default='.png', help='')
 parser.add_argument('--size', type=int, default=100, help='size of the data (squared assumed)')
 opt = parser.parse_args()
 
+opt.targetroot = './output/B/'
+opt.gtroot = '/root/USRGAN_test/C/'
+
 img_list = [os.path.splitext(f)[0] for f in os.listdir(opt.targetroot) if f.endswith(opt.img_format)]
 
 mse_sum = 0.0
@@ -22,10 +25,11 @@ for idx, img_name in enumerate(img_list):
     target = np.array(Image.open(os.path.join(opt.targetroot, img_name + opt.img_format)).convert('RGB').resize((opt.size, opt.size)), dtype=np.float)
     gt = np.array(Image.open(os.path.join(opt.gtroot, img_name + opt.img_format)).convert('RGB').resize((opt.size, opt.size)), dtype=np.float)
 
-    mse = np.linalg.norm(gt-target)
+    mse = np.sqrt(np.linalg.norm(gt-target))
 
     mse_sum += mse
 
 avg_mse = mse_sum / len(img_list)
 
-print('avg_mse: {}'.format(avg_mse))
+print('avg_rmse: {}'.format(avg_mse))
+
